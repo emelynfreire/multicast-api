@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: multicast-api
+  namespace: default
+spec:
+  clusterIP: None
+  selector:
+    app: multicast-api
+  ports:
+  - port: 3000
+    targetPort: 3000
+    name: http
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: multicast-api
+  namespace: default
+spec:
+  serviceName: multicast-api
+  replicas: 3
+  selector:
+    matchLabels:
+      app: multicast-api
+  template:
+    metadata:
+      labels:
+        app: multicast-api
+    spec:
+      containers:
+      - name: multicast-api
+        image: multicast-api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: TOTAL_PROCESSES
+          value: "3"
+        - name: PORT
+          value: "3000"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          PROCESS_ID=$(echo $POD_NAME | grep -o '[0-9]*$')
+          export PROCESS_ID
+          echo "🚀 Starting Process $PROCESS_ID"
+          echo "   Pod: $POD_NAME"
+          echo "   Port: $PORT"
+          node dist/index.js
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 20
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

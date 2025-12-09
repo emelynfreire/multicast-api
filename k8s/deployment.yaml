@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multicast-api-0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multicast-api
+      process: "0"
+  template:
+    metadata:
+      labels:
+        app: multicast-api
+        process: "0"
+    spec:
+      containers:
+      - name: multicast-api
+        image: multicast-api:latest
+        imagePullPolicy: Never
+        env:
+        - name: PROCESS_ID
+          value: "0"
+        - name: TOTAL_PROCESSES
+          value: "3"
+        - name: PORT
+          value: "3000"
+        ports:
+        - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multicast-api-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multicast-api
+      process: "1"
+  template:
+    metadata:
+      labels:
+        app: multicast-api
+        process: "1"
+    spec:
+      containers:
+      - name: multicast-api
+        image: multicast-api:latest
+        imagePullPolicy: Never
+        env:
+        - name: PROCESS_ID
+          value: "1"
+        - name: TOTAL_PROCESSES
+          value: "3"
+        - name: PORT
+          value: "3000"
+        ports:
+        - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multicast-api-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multicast-api
+      process: "2"
+  template:
+    metadata:
+      labels:
+        app: multicast-api
+        process: "2"
+    spec:
+      containers:
+      - name: multicast-api
+        image: multicast-api:latest
+        imagePullPolicy: Never
+        env:
+        - name: PROCESS_ID
+          value: "2"
+        - name: TOTAL_PROCESSES
+          value: "3"
+        - name: PORT
+          value: "3000"
+        ports:
+        - containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 30
