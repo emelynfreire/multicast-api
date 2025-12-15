@@ -96,51 +96,7 @@ curl http://192.168.49.2:30000/health
 ### Health
 - `GET /health` - Status geral do processo
 
-## 🎥 Para o Vídeo de Demonstração
 
-```powershell
-# 1. Mostrar ambiente
-kubectl get nodes
-kubectl cluster-info
-
-# 2. Deploy
-npm run k8s:deploy
-
-# 3. Verificar pods
-kubectl get pods -l app=multicast-api -o wide
-
-# 4. Testar algoritmos
-npm run k8s:test
-
-# 5. Mostrar logs em tempo real
-npm run k8s:logs
-
-# 6. Demonstrar cada algoritmo manualmente
-curl -X POST http://localhost:30000/multicast/send -H "Content-Type: application/json" -d "{\"content\": \"Demo\"}"
-curl -X POST http://localhost:30000/election/start
-curl http://localhost:30000/election/status
-```
-
-## 🔧 Comandos Úteis
-
-```powershell
-# Ver logs em tempo real
-kubectl logs -f multicast-api-0
-kubectl logs -f multicast-api-1
-kubectl logs -f multicast-api-2
-
-# Executar comando dentro do pod
-kubectl exec -it multicast-api-0 -- /bin/sh
-
-# Ver todos os recursos
-kubectl get all
-
-# Deletar tudo
-npm run k8s:cleanup
-
-# Reconstruir e fazer deploy novamente
-npm run k8s:deploy
-```
 
 ## 📁 Estrutura do Projeto
 
