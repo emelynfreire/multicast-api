@@ -1,0 +1,14 @@
+# FastAPI - Framework web assíncrono moderno
+fastapi==0.115.0
+
+# Uvicorn - Servidor ASGI
+uvicorn[standard]==0.32.0
+
+# Requests - Cliente HTTP
+requests==2.32.0
+
+# Pydantic - Validação de dados
+pydantic==2.10.0
+
+# Python-dotenv - Variáveis de ambiente
+python-dotenv==1.0.0

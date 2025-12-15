@@ -18,6 +18,7 @@ spec:
       - name: multicast-api
         image: multicast-api:latest
         imagePullPolicy: Never
+        command: ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "3000"]
         env:
         - name: PROCESS_ID
           value: "0"
@@ -54,6 +55,7 @@ spec:
       - name: multicast-api
         image: multicast-api:latest
         imagePullPolicy: Never
+        command: ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "3000"]
         env:
         - name: PROCESS_ID
           value: "1"
@@ -90,6 +92,7 @@ spec:
       - name: multicast-api
         image: multicast-api:latest
         imagePullPolicy: Never
+        command: ["python", "-m", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "3000"]
         env:
         - name: PROCESS_ID
           value: "2"

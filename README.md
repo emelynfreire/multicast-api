@@ -1,104 +1,73 @@
 # multicast-api
 
-API REST para demonstração de algoritmos de coordenação distribuída rodando no Kubernetes.
+API REST para demonstração de algoritmos de coordenação distribuída no Kubernetes.
 
-## 🎯 Funcionalidades
+## 🎯 Algoritmos Implementados
 
-1. **Multicast com Ordenação Total** - Usa relógio lógico de Lamport e fila de prioridade
-2. **Exclusão Mútua Distribuída** - Algoritmo baseado em timestamps (Ricart-Agrawala)
-3. **Eleição de Líder** - Algoritmo do Valentão (Bully)
+1. **Multicast com Ordenação Total (2.0 pts)** - Relógio de Lamport
+2. **Exclusão Mútua Distribuída (2.0 pts)** - Algoritmo Centralizado
+3. **Eleição de Líder (2.0 pts)** - Algoritmo Bully
 
-## 📋 Pré-requisitos
+## 🚀 Execução Rápida
 
-- **Docker Desktop** (com Kubernetes habilitado) ✅ Recomendado
-  - OU -
-- Minikube + kubectl + Docker (alternativa)
-- Node.js 18+ (para desenvolvimento local)
-
-## 🚀 Execução
-
-### Opção 1: Local (Desenvolvimento)
+### Local (3 terminais)
 
 ```powershell
-# Instalar dependências
-npm install
+# Terminal 1
+.\.venv\Scripts\Activate.ps1
+$env:PROCESS_ID="0"
+python -m uvicorn src.main:app --host 127.0.0.1 --port 3000 --reload
 
-# Executar 3 processos
-npm run start:all
+# Terminal 2
+.\.venv\Scripts\Activate.ps1
+$env:PROCESS_ID="1"
+python -m uvicorn src.main:app --host 127.0.0.1 --port 3001 --reload
 
-# Testar (em outro terminal)
-npm run test:multicast
-npm run test:mutex
-npm run test:election
+# Terminal 3
+.\.venv\Scripts\Activate.ps1
+$env:PROCESS_ID="2"
+python -m uvicorn src.main:app --host 127.0.0.1 --port 3002 --reload
 ```
 
-### Opção 2: Kubernetes (Demonstração)
+### Testar
 
 ```powershell
-# Verificar cluster (Docker Desktop ou Minikube)
-kubectl get nodes
-
-# Deploy completo
-npm run k8s:deploy
-
-# Testar
-npm run k8s:test
-
-# Ver logs
-npm run k8s:logs
-
-# Limpar
-npm run k8s:cleanup
+python scripts/test_election.py
+python scripts/test_multicast.py
+python scripts/test_mutex.py
 ```
 
-## 🐳 Setup do Kubernetes
-
-### Com Docker Desktop (Recomendado):
-
-1. Abra Docker Desktop
-2. Settings ⚙️ → Kubernetes
-3. ✅ Enable Kubernetes
-4. Apply & Restart
-5. Aguarde aparecer "Kubernetes is running" ✅
+## 🐳 Kubernetes
 
 ```powershell
-# Verificar
-kubectl cluster-info
-# Deve mostrar: docker-desktop
+# Build
+docker build -t multicast-api:latest .
+
+# Deploy
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/deployment.yaml
+kubectl apply -f k8s/service.yaml
+
+# Ver pods
+kubectl get pods -n multicast-system
 ```
 
-### Com Minikube (Alternativa):
+## 📚 Documentação
 
-```powershell
-# Instalar
-choco install minikube
+- [COMO_EXECUTAR_LOCALMENTE.md](COMO_EXECUTAR_LOCALMENTE.md) - Guia completo de execução
+- [REQUIREMENTS.md](REQUIREMENTS.md) - Requisitos do projeto
 
-# Iniciar
-minikube start --driver=docker
+## 📊 Endpoints
 
-# Verificar
-kubectl get nodes
-```
+- `POST /election/start` - Iniciar eleição
+- `POST /multicast/send` - Enviar mensagem
+- `POST /mutex/request-access` - Solicitar acesso
+- `GET /multicast/status` - Status do multicast
+- `GET /election/status` - Status da eleição
+- `GET /mutex/status` - Status do mutex
 
-**💡 Veja mais detalhes em:** [KUBERNETES_EXPLICACAO.md](KUBERNETES_EXPLICACAO.md)
+Acesse http://localhost:3000/docs para documentação interativa.
 
-## 🧪 Testes
-
-### Local (portas 3000-3002):
-
-```powershell
-# Health check
-curl http://localhost:3000/health
-
-# Enviar mensagem multicast
-curl -X POST http://localhost:3000/multicast/send -H "Content-Type: application/json" -d "{\"content\": \"Hello World\"}"
-
-# Iniciar eleição
-curl -X POST http://localhost:3000/election/start
-
-# Ver líder
-curl http://localhost:3000/election/status
-```
 
 ### Kubernetes com Docker Desktop (portas 30000-30002):
 
@@ -197,11 +166,6 @@ multicast-api/
 ├── k8s/
 │   ├── statefulset.yaml  # StatefulSet Kubernetes
 │   └── services.yaml     # Services NodePort
-├── scripts/
-│   ├── deploy-k8s.bat    # Deploy automatizado
-│   ├── test-k8s.bat      # Testes automatizados
-│   ├── logs-k8s.bat      # Ver logs
-│   └── cleanup-k8s.bat   # Limpar recursos
 ├── Dockerfile
 ├── package.json
 ├── README.md
