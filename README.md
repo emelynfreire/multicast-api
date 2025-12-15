@@ -29,12 +29,6 @@ $env:PROCESS_ID="2"
 python -m uvicorn src.main:app --host 127.0.0.1 --port 3002 --reload
 ```
 
-### Testar
-
-```powershell
-python scripts/test_election.py
-python scripts/test_multicast.py
-python scripts/test_mutex.py
 ```
 
 ## 🐳 Kubernetes
@@ -51,11 +45,6 @@ kubectl apply -f k8s/service.yaml
 # Ver pods
 kubectl get pods -n multicast-system
 ```
-
-## 📚 Documentação
-
-- [COMO_EXECUTAR_LOCALMENTE.md](COMO_EXECUTAR_LOCALMENTE.md) - Guia completo de execução
-- [REQUIREMENTS.md](REQUIREMENTS.md) - Requisitos do projeto
 
 ## 📊 Endpoints
 
@@ -180,17 +169,3 @@ multicast-api/
 - StatefulSet garante nomes previsíveis dos pods
 - NodePort permite acesso externo
 - Relógio lógico é inicializado aleatoriamente (0-10)
-
-## 🎯 Resumo Rápido
-
-**Desenvolvimento local:**
-```powershell
-npm install && npm run start:all
-```
-
-**Deploy Kubernetes:**
-```powershell
-npm run k8s:deploy
-```
-
-**Pronto! 🚀**
